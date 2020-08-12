@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image "bryandollery/terraform-packer-aws-alpine"
-      args "-u root --entrypoint='' --rm"
+      args "-u root --entrypoint='' "
     }
   }
   environment {
@@ -18,6 +18,8 @@ pipeline {
       stage("init") {
           steps {
               sh 'make init'
+              sh 'time terraform plan -out plan.out -lock=false'
+
           }
       }
       stage("plan") {
