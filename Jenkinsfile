@@ -29,7 +29,7 @@ pipeline {
           steps {
               sh 'make apply'
               sh 'ls'
-              sh 'ip_address.txt'
+              sh 'cat ip_address.txt'
           }
       }
   }
