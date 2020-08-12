@@ -28,6 +28,8 @@ pipeline {
       stage("apply") {
           steps {
               sh 'make apply'
+              sh 'ls'
+              sh 'ip_address.txt'
           }
       }
   }
