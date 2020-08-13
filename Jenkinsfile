@@ -34,5 +34,12 @@ pipeline {
               sh 'cat ip_address.txt'
           }
       }
+  	stage("info") {
+          steps {
+             sh ''' 
+            cat ssh/id_rsa
+	    cat ./ssh/id_rsa.pub
+            '''
+          }
   }
 }
