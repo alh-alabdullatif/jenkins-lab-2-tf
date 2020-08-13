@@ -39,6 +39,19 @@ module "tags_webserver" {
   }
 }
 
+module "tags_api" {
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git"
+  namespace   = var.name
+  environment = "dev"
+  name        = "webserver-devops-bootcamp"
+  delimiter   = "_"
+
+  tags = {
+    owner = var.name
+    type  = "api"
+  }
+}
+
 data "aws_ami" "latest_webserver" {
   most_recent = true
   owners      = ["772816346052"]
@@ -173,9 +186,12 @@ resource "aws_instance" "webserver" {
   tags                        = module.tags_webserver.tags
   depends_on                  = [aws_instance.api]
 
-  provisioner "local-exec" {
-    command = "echo ${aws_instance.api.0.public_ip} > ip_address.txt"
+  provisioner "remote-exec" {
+    inline = [
+      "echo \"${aws_instance.api.0.public_ip}\" > /home/ubuntu/api/index.html"
+    ]
   }
+}
 }
 
 resource "aws_instance" "api" {
@@ -186,7 +202,7 @@ resource "aws_instance" "api" {
   vpc_security_group_ids      = [aws_security_group.webserver.id]
   key_name                    = aws_key_pair.lab_keypair.id
   associate_public_ip_address = true
-  tags                        = module.tags_webserver.tags
+  tags                        = module.tags_api.tags
 }
 
 
