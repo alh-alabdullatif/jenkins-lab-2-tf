@@ -190,6 +190,16 @@ resource "aws_instance" "webserver" {
     inline = [
       "echo \"${aws_instance.api.0.public_ip}\" > /home/ubuntu/api/index.html"
     ]
+
+    connection {
+      type                = "ssh"
+      user                = "ubuntu"
+      host                = self.private_ip
+      private_key         = file("./ssh/id_rsa")
+      bastion_host        = aws_instance.bastion.public_ip
+      bastion_private_key = file("./ssh/id_rsa")
+      bastion_user        = "ubuntu"
+    }
   }
 }
 
